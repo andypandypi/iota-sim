@@ -1,4 +1,4 @@
-function Tangle = newarrivals(Tangle, lambda, mu, type, node)
+function Tangle = generate_sites(Tangle, lambda, mu, type, node)
 
 % number of new honest arrivals in this time step according to poisson
 nNewHon = poissrnd(lambda*Tangle.dt);
