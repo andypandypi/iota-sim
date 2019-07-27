@@ -1,4 +1,4 @@
-function [Tangle, Results] = tangleAIMD(Tangle, mcNum, Results)
+function [Tangle, Results] = generate_aimd(Tangle, mcNum, Results)
 
 %% Tangle Simulation
 
@@ -37,8 +37,10 @@ for t = 0:Tangle.dt:Tangle.simTime-Tangle.dt
                 Results.avgOrphanRate(n,t) = length(nodeOrphans);
                 Results.nOrphans(n,t) = length(nodeOrphans);
             end
-            
-            if(Results.orphanRate(n,t)<Tangle.orphanRate) % additive increase
+
+%% AIMD Part
+            if(Results.nOrphans(n,t)<Tangle.orphanRate) % additive increase
+                Results.nOrphans(n,t) = 0; 
                 Tangle.Nodes(n).alpha = Tangle.Nodes(n).alpha + Tangle.Nodes(n).alpha_AIMD;
             else % multiplicative decrease
                 Tangle.Nodes(n).alpha = Tangle.Nodes(n).alpha*Tangle.Nodes(n).beta_AIMD;

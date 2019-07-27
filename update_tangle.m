@@ -13,7 +13,7 @@ end
 
 % do PoW for pending sites
 for i = pendingSites 
-    Tangle = doPoW(Tangle, i);
+    Tangle = do_pow(Tangle, i);
     if Tangle.Sites(i).isAttached
         continue
     end

@@ -1,4 +1,4 @@
-function Tangle = updatecumulativeweight(Tangle, currentSite, newTip, newTipWeight)
+function Tangle = update_cumulative_weight(Tangle, currentSite, newTip, newTipWeight)
 
 parents = Tangle.Sites(currentSite).parents;
 

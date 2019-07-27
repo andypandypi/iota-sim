@@ -1,4 +1,4 @@
-function T = gettmatrix(Tangle, alpha, beta)
+function T = get_t_matrix(Tangle, alpha, beta)
 T = zeros(Tangle.size);
 for i = 1:Tangle.size
     if(Tangle.Sites(i).isTip)

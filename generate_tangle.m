@@ -14,6 +14,9 @@ for t = 0:Tangle.dt:Tangle.simTime-Tangle.dt
     end
     waitbar(t/Tangle.simTime,f)
     
+    % Generate new sites
+    Tangle = generate_sites(Tangle, Tangle.lambda, Tangle.mu, 2, 1);
+    
     % Update tangle
     Tangle = update_tangle(Tangle);
     
