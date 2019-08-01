@@ -30,8 +30,8 @@ Tangle = create_genesis(Tangle);
 for n = 1:Tangle.nNodes
     Tangle.Nodes(n).alpha = 0.1;
     Tangle.Nodes(n).beta = 0;
-    Tangle.Nodes(n).alpha_AIMD = alpha_AIMD;
-    Tangle.Nodes(n).beta_AIMD = beta_AIMD;
+    Tangle.Nodes(n).alphaAIMD = alphaAIMD;
+    Tangle.Nodes(n).betaAIMD = betaAIMD;
 end
 
 Results.alphas = zeros(nNodes, simTime);

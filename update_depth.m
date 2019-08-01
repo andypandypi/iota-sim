@@ -9,7 +9,7 @@ if ~isempty(parents) % && Tangle.Sites(currentSite).depth<=Tangle.maxDepth
         if(Tangle.Sites(parents(i)).depth<depth)
             Tangle.Sites(parents(i)).depth = depth;
             % Call self on this child
-            Tangle = updatedepth(Tangle, parents(i), depth+1);
+            Tangle = update_depth(Tangle, parents(i), depth+1);
         end
     end
 end

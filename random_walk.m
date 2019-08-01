@@ -1,25 +1,37 @@
-function rwSite = random_walk(Tangle, alpha, beta)
+function rwSite = random_walk(Tangle, alpha, beta, lastSelection, type)
 
-% start random walk from max depth
-maxDepthSites = find([Tangle.Sites.depth]>=Tangle.maxDepth);
-if(isempty(maxDepthSites))
-    rwSite = ceil(Tangle.nStartingTips*rand());
+% start random walk from genesis
+if(max([Tangle.Sites.depth])<Tangle.maxDepth)
+    rwSite = 1;
 else
-    rwSite = randsample(maxDepthSites,1);
+    rwSite = randsample(find([Tangle.Sites.depth]>=Tangle.maxDepth), 1);
 end
 
-while ~Tangle.Sites(rwSite).isTip
+while (~Tangle.Sites(rwSite).isTip)
+    
+%     if(~is_valid_site(rwSite))
+%         % restart random walk
+%         if(max([Tangle.Sites.depth])<Tangle.maxDepth)
+%             rwSite = 1;
+%             if(sum([Tangle.Sites.isTip])==1) % case when there is only one tip so far
+%                 break
+%             end
+%         else
+%             rwSite = randsample(find([Tangle.Sites.depth]>=Tangle.maxDepth), 1);
+%         end
+%     end
     children = [];
-    % only valid parents if have completed PoW
+    % only valid child if have completed PoW and are consistent with last
+    % selection type
     for c = Tangle.Sites(rwSite).children
-        if Tangle.Sites(p).isAttached
+        if Tangle.Sites(c).isAttached && is_valid_site(Tangle, c, type, lastSelection)
             children = [children c];
         end
     end
     
     parents = Tangle.Sites(rwSite).parents;
-        
-
+    
+    jumpingProbs = zeros(1, length(children) + length(parents));
     CW = Tangle.Sites(rwSite).cumulativeWeight(Tangle.nCW);
     dCWdt = Tangle.Sites(rwSite).dCWdt; %Tangle.lambda;
     childCWs = zeros(1,length(children));
@@ -28,10 +40,9 @@ while ~Tangle.Sites(rwSite).isTip
         childCWs(j) = Tangle.Sites(children(j)).cumulativeWeight(Tangle.nCW);
         childdCWdts(j) = Tangle.Sites(children(j)).dCWdt;
     end
-%% possibly dodgey
+%% possibly missin a case of no children
     if isempty(children)
-        break % this is a tip
-%%
+        jumpingProbs = ones(1, length(parents))/length(parents);
     elseif isempty(parents)
         denA = exp(-alpha*(CW*ones(1, length(children))-childCWs));
         denB = exp(-beta*abs(dCWdt*ones(1, length(children))-childdCWdts));
@@ -57,10 +68,30 @@ while ~Tangle.Sites(rwSite).isTip
     randRoll = rand();
     for j = 1:length(jumpingProbs)
         if randRoll>=sum(probIntervals(1:j)) && randRoll<=sum(probIntervals(1:j+1))
+%             nextSiteType = Tangle.Sites(options(j)).type;
+%             if(isempty(lastSelection))
+%                 rwSite = options(j);
+%             elseif((nextSiteType==0 || nextSiteType==type) && options(j)~=lastSelection)
+%                 rwSite = options(j);
+%             else
+%                 return
+%             end
+%             break
             rwSite = options(j);
-            break
         end
     end
 end
 
+end
+
+function isValid = is_valid_site(Tangle, rwSite, type, lastSelection)
+if(rwSite==lastSelection)
+    isValid = false;    
+elseif(Tangle.Sites(rwSite).type==0)
+    isValid = true;
+elseif(Tangle.Sites(rwSite).type==type || type==0)
+    isValid = true;
+else
+    isValid = false;
+end
 end

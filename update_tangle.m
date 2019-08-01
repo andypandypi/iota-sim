@@ -1,25 +1,28 @@
 function Tangle = update_tangle(Tangle)
 
-newSites = find(~[Tangle.Sites.isTip].*~[Tangle.Sites.isSelected].*~[Tangle.Sites.selectedParents]);
-pendingSites = find(~[Tangle.Sites.isTip].*~[Tangle.Sites.isSelected].*[Tangle.Sites.selectedParents]);
-addedSites = find(~(~[Tangle.Sites.isTip].*~[Tangle.Sites.isSelected]));
+newSites = find(~[Tangle.Sites.isAttached].*~[Tangle.Sites.selectedParents]);
+pendingSites = find(~[Tangle.Sites.isAttached].*[Tangle.Sites.selectedParents]);
+addedSites = find([Tangle.Sites.isAttached]);
 
 % look for tips to validate for newly arrived sites
-for i = newSites 
-    n = Tangle.Sites(i).node;
-    Tangle = selecttips(Tangle, i, Tangle.Nodes(n).alpha, Tangle.Nodes(n).beta, Tangle.Nodes(n).alpha, Tangle.Nodes(n).beta);
-    Tangle.Sites(i).timePending = Tangle.Sites(i).timePending + Tangle.dt;
+for newSite = newSites
+    if(newSite>1)
+        n = Tangle.Sites(newSite).node;
+        selectedTips = Tangle.Nodes(n).tsa(Tangle, newSite);
+        Tangle = add_edges(Tangle, newSite, selectedTips);
+        Tangle.Sites(newSite).timePending = Tangle.Sites(newSite).timePending + Tangle.dt;
+    end
 end
 
 % do PoW for pending sites
-for i = pendingSites 
-    Tangle = do_pow(Tangle, i);
-    if Tangle.Sites(i).isAttached
+for pendingSite = pendingSites 
+    Tangle = do_pow(Tangle, pendingSite);
+    if Tangle.Sites(pendingSite).isAttached
         continue
     end
 end
 
 % increment age of fully added sites
-for i = addedSites
-    Tangle.Sites(i).age = Tangle.Sites(i).age + Tangle.dt;
+for addedSite = addedSites
+    Tangle.Sites(addedSite).age = Tangle.Sites(addedSite).age + Tangle.dt;
 end

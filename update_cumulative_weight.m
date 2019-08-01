@@ -15,7 +15,7 @@ if ~isempty(parents) % && Tangle.Sites(currentSite).depth<=Tangle.maxDepth
             Tangle.Sites(p).lastTipAdded = newTip;
             
             % Call self on this parent
-            Tangle = updatecumulativeweight(Tangle, p, newTip, newTipWeight);
+            Tangle = update_cumulative_weight(Tangle, p, newTip, newTipWeight);
             
         end
     end
