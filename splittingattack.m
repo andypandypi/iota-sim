@@ -2,7 +2,7 @@
 clear all
 close all
 %% Initialise Tangle simulation parameters
-nMC = 20;           % number of monte carlos
+nMC = 1;           % number of monte carlos
 Tangle.nNodes = 1;
 Tangle.simTime = 180;
 Tangle.q = 1/3;

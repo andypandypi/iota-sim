@@ -8,8 +8,9 @@ for node = 1:length(Tangle.Nodes)
 
         for i = 1:nNewSites
             [depth, oldSite] = max([Tangle.Sites.depth]);
+            h = exprnd(5,1,1);
             if(depth<=Tangle.maxDepth)
-                Tangle.Sites(Tangle.size + 1) = new_site(1, Tangle.nCW, node);
+                Tangle.Sites(Tangle.size + 1) = new_site(1, Tangle.nCW, node, h);
                 Tangle.size = Tangle.size + 1;
             else
                 % remove references to old side
@@ -18,7 +19,7 @@ for node = 1:length(Tangle.Nodes)
                     Tangle.Sites(c).parents(Tangle.Sites(c).parents==oldSite) = [];
                 end
 
-                Tangle.Sites(oldSite) = new_site(1, Tangle.nCW, node);
+                Tangle.Sites(oldSite) = new_site(1, Tangle.nCW, node, h);
             end
         end
     end

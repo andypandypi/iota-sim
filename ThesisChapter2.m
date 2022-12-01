@@ -14,9 +14,9 @@ Tangle.nStartingTips = 1;
 Tangle.size = Tangle.nStartingTips;
 
 %% Node parameters
-alpha = 0.01;
-beta = 0;
-lambda = 10;
+alpha = [];
+beta = [];
+lambda = 20;
 tsa = @standard_tsa;
 Tangle.Nodes = new_node(alpha, beta, 0, 0, lambda, tsa);
 
